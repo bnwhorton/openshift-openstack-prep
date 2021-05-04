@@ -1,5 +1,4 @@
 ---
-
 - name: Generate an OpenSSL private key for Openshift API
   openssl_privatekey:
     path: "~/certs/api.{{ openshift_domain }}.pem"
@@ -45,9 +44,10 @@
     ipa_user: admin
     ipa_pass: topsecret
 
+- name: sign cert with default profile
+  shell: "ipa cert-request file://~/api.{{ openshift_domain }}.csr --principal=host/api.{{ openshift_domain }} --add"
+  
 #- name: sign cert with wildcard profile
-
-#- name: sign cert with default profile
 
 #- name: save cert and key
 
