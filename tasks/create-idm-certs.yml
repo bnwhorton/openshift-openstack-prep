@@ -1,0 +1,55 @@
+---
+
+- name: Generate an OpenSSL private key for Openshift API
+  openssl_privatekey:
+    path: "~/certs/api.{{ openshift_domain }}.pem"
+
+- name: Generate an OpenSSL private key for Openshift Star.APPS
+  openssl_privatekey:
+    path: "~/certs/apps.{{ openshift_domain }}.pem"
+  
+- name: Generate an OpenSSL Certificate Signing Request for Openshift API
+  openssl_csr:
+    path: "~/certs/api.{{ openshift_domain }}.csr"
+    privatekey_path: "~/certs/api.{{ openshift_domain }}.pem"
+    country_name: "{{ country_name }}"
+    organization_name: "{{ org_name }}" 
+    common_name: "api.{{ openshift_domain }}"
+    subject_alt_name: "DNS:api.{{ openshift_domain }}"
+
+#dont sign a subject alt name as the idm wildcard profile will add one
+- name: Generate an OpenSSL Certificate Signing Request for Openshift Star.APPS 
+  openssl_csr:
+    path: "~/certs/apps.{{ openshift_domain }}.csr"
+    privatekey_path: "~/certs/apps.{{ openshift_domain }}.pem"
+    country_name: "{{ country_name }}"
+    organization_name: "{{ org_name }}"
+    common_name: "apps.{{ openshift_domain }}"
+
+#TODO replace passwords with vault
+- name: Add Api. Ghost host to IDM
+  ipa_host:
+    name: "api.{{ openshift_domain }}"
+    description: Openshift API Host to sign certs
+    state: present
+    ipa_host: ipa.example.com
+    ipa_user: admin
+    ipa_pass: topsecret
+
+- name: Add Apps. Ghost host to IDM
+  ipa_host:
+    name: "apps.{{ openshift_domain }}"
+    description: Openshift Apps Host to sign certs
+    state: present
+    ipa_host: ipa.example.com
+    ipa_user: admin
+    ipa_pass: topsecret
+
+#- name: sign cert with wildcard profile
+
+#- name: sign cert with default profile
+
+#- name: save cert and key
+
+#- name: provide cert for use in install config
+

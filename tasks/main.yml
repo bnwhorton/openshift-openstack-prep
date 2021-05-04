@@ -1,2 +1,3 @@
 ---
-# tasks file for openshift-openstack-prep
+- name: Create certs for Openshift
+  import_tasks: create-idm-certs.yml
