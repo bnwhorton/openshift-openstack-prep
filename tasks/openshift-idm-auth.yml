@@ -1,4 +1,22 @@
 ---
+- name: Create IDM CA config-map
+  k8s:
+    state: present
+    definition: 
+      kind: ConfigMap
+      apiVersion: v1
+      metadata:
+        name: ldap-secret
+        namespace: openshift-config
+      data:
+      
+
+
+- name: Create IDM bind secret
+  k8s:
+    state: present
+    definition:
+
 - name: Create OAuth object for IDM
   k8s:
     state: present
